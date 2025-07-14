@@ -18,4 +18,4 @@ A web application to check the status of Minecraft servers.
 ## Usage
 - Enter a server address (e.g., `mc.hypixel.net`)
 - Click "Check Server" to view status
-- Json access with 'http://localhost:5000/api/status/-ip-'
+- Json access with 'http://localhost:5000/api/quick-status/-ip-'
