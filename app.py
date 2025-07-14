@@ -29,13 +29,14 @@ async def check_server(server_ip):
             
             basic_response = {
                 "online": True,
+                "ip": server.address,
                 "version": status.version.name,
                 "players": status.players.online,
                 "max_players": status.players.max,
                 "motd": str(status.description),
                 "latency": status.latency,
                 "last_updated": datetime.now().isoformat(),
-                "response_time_ms": (datetime.now() - start_time).total_seconds() * 1000
+                "response_time_ms": (datetime.now() - start_time).total_seconds() * 1000,
             }
             
             if status.players.online > 0:
