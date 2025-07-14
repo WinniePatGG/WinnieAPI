@@ -14,16 +14,22 @@ A web application to check the status of Minecraft servers.
 - Responsive design
 
 ## Installation
+
+### Linux
 1. Clone this repository
-2. Install requirements: `pip install -r requirements.txt`
-3. Run: `python -m venv .venv`
-4. Run: `.venv/bin/pip install -r requirements.txt` (Linux)
-4. Run: `.venv/Scripts/pip install -r requirements.txt` (Windows)
-5. Run the application: `.venv/bin/python app.py` (Linux)
-5. Run the application: `.venv/Scripts/python app.py` (Windows)
-6. Access at `http://localhost:5000`
+2. Setup venv: `python -m venv .venv`
+3. Install requirements: `.venv/bin/pip install -r requirements.txt`
+4. Run the application: `.venv/bin/python app.py`
+5. Access at `http://localhost:5000`
+
+### Windows
+1. Clone this repository
+2. Setup venv: `python -m venv .venv`
+3. Install requirements: `.venv/Scripts/pip install -r requirements.txt`
+4. Run the application: `.venv/Scripts/python app.py`
+5. Access at `http://localhost:5000`
 
 ## Usage
 - Enter a server address (e.g., `lunaris-mc.de`)
 - Click "Check Server" to view status
-- Json access with 'http://localhost:5000/api/quick-status/-ip-'
+- Direct access with `http://localhost:5000/api/quick-status/-ip-`
