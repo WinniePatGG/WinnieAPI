@@ -16,6 +16,6 @@ A web application to check the status of Minecraft servers.
 4. Access at `http://localhost:5000`
 
 ## Usage
-- Enter a server address (e.g., `mc.hypixel.net`)
+- Enter a server address (e.g., `lunaris-mc.de`)
 - Click "Check Server" to view status
 - Json access with 'http://localhost:5000/api/quick-status/-ip-'
