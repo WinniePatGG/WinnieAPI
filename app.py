@@ -30,6 +30,7 @@ async def check_server(server_ip):
             basic_response = {
                 "online": True,
                 "version": status.version.name,
+                "players": status.players.online,
                 "max_players": status.players.max,
                 "motd": str(status.description),
                 "latency": status.latency,
