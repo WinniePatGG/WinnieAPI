@@ -2,6 +2,10 @@
 
 A web application to check the status of Minecraft servers.
 
+## Public Access
+- https://api.winniepat.de
+- https://api.winniepat.de/api/status/-ip-
+
 ## Features
 - Fast status checking
 - Player count and list visualization
