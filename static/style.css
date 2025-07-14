@@ -1,0 +1,175 @@
+:root {
+    --bg-dark: #121212;
+    --bg-darker: #0a0a0a;
+    --bg-card: #1e1e1e;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --mc-green: #5cb85c;
+    --mc-dark-green: #449d44;
+    --mc-red: #d9534f;
+    --mc-dark-red: #c9302c;
+    --accent-color: #3b8520;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.logo-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.minecraft-logo {
+    height: 60px;
+    filter: drop-shadow(0 0 8px rgba(92, 184, 92, 0.3));
+}
+
+.card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid #333;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.form-control, .form-select {
+    background-color: #2d2d2d;
+    border: 1px solid #444;
+    color: var(--text-primary);
+}
+
+.form-control:focus {
+    background-color: #333;
+    border-color: var(--mc-green);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 0.25rem rgba(92, 184, 92, 0.25);
+}
+
+.input-group-text {
+    background-color: #252525;
+    border: 1px solid #444;
+    color: var(--text-secondary);
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--mc-dark-green);
+    border-color: var(--mc-dark-green);
+}
+
+.btn-outline-primary {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.status-loading {
+    color: var(--text-primary);
+}
+
+.alert-danger {
+    background-color: #2a1a1a;
+    border-color: #5c2c2c;
+    color: #ff6b6b;
+}
+
+.progress {
+    background-color: #2a2a2a;
+}
+
+.progress-bar {
+    background-color: var(--accent-color);
+}
+
+.player-card {
+    background: #252525;
+    border: 1px solid #333;
+    transition: all 0.2s;
+}
+
+.player-card:hover {
+    background: #2e2e2e;
+    border-color: var(--accent-color);
+    transform: translateY(-3px);
+}
+
+.motd-box {
+    background-color: #252525;
+    border: 1px solid #333;
+    color: var(--text-primary);
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+}
+
+.badge.bg-dark {
+    background-color: #333 !important;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-card);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.pulse {
+    animation: pulse 1.5s infinite;
+}
+
+@media (max-width: 768px) {
+    .minecraft-logo {
+        height: 40px;
+    }
+    
+    .players-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+
+.dark-mode-input {
+    background-color: #2d2d2d !important;
+    border-color: #444 !important;
+    color: #ffffff !important;
+}
+
+.dark-mode-input::placeholder {
+    color: #b0b0b0 !important;
+}

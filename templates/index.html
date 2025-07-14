@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Server Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-4">
+        <header class="text-center mb-5">
+            <div class="logo-container">
+                <img src="https://imgs.search.brave.com/9YuEZ4MZ2Worbo1zJGCsCNvTccs0CqeyDTNM4Ms3fyA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuaWNvbi1pY29u/cy5jb20vMjY5OS9Q/TkcvNTEyL21pbmVj/cmFmdF9sb2dvX2lj/b25fMTY4OTc0LnBu/Zw" alt="Minecraft" class="minecraft-logo">
+                <h1 class="mt-3">Server Status API</h1>
+                <p class="lead text-muted">Server analytics with fast results</p>
+            </div>
+        </header>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <div class="server-search mb-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark text-white">
+                                    <i class="bi bi-minecraft"></i>
+                                </span>
+                                <input type="text" id="serverInput" 
+                                       class="form-control form-control-lg dark-mode-input" 
+                                       placeholder="mc.hypixel.net" 
+                                       autocomplete="off">
+                                <button id="checkBtn" class="btn btn-success btn-lg px-4">
+                                    <i class="bi bi-lightning-charge"></i> Check
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="statusContainer">
+                            <div class="welcome-message text-center py-5">
+                                <i class="bi bi-server text-muted" style="font-size: 3rem;"></i>
+                                <h4 class="mt-3">Enter a server address to begin</h4>
+                                <p class="text-muted">Example: lunaris-mc.de or 123.123.123.123:25565</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-5 text-center text-muted small">
+            <p>Minecraft Server Status Monitor &copy; 2025</p>
+            <p class="text-muted">Not affiliated with Mojang or Microsoft</p>
+            <p>Made with &heartsuit; by WinniePat</p>
+        </footer>
+    </div>
+
+    <template id="loadingTemplate">
+        <div class="status-loading text-center py-5">
+            <div class="spinner-border text-primary"></div>
+            <h5 class="mt-3" id="loadingText">Connecting to server...</h5>
+            <div class="progress mt-3" style="height: 6px;">
+                <div id="timeoutBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                     role="progressbar" style="width: 100%"></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="errorTemplate">
+        <div class="status-error">
+            <div class="alert alert-danger">
+                <div class="d-flex">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div>
+                        <h5 id="errorTitle">Server Error</h5>
+                        <p id="errorMessage" class="mb-0"></p>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-sm btn-outline-primary w-100 mt-2" onclick="retryCheck()">
+                <i class="bi bi-arrow-clockwise"></i> Try Again
+            </button>
+        </div>
+    </template>
+
+    <template id="successTemplate">
+        <div class="status-success">
+            <div class="server-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 id="serverAddress" class="mb-0"></h4>
+                    <span id="serverStatusBadge" class="badge"></span>
+                </div>
+                <div class="server-meta mt-2">
+                    <span id="serverVersion" class="badge bg-dark me-2"></span>
+                    <small id="lastUpdated" class="text-muted"></small>
+                </div>
+            </div>
+
+            <div class="server-stats mt-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <h6><i class="bi bi-people"></i> Players</h6>
+                            <div class="d-flex align-items-end">
+                                <h2 id="playerCount" class="mb-0 me-2"></h2>
+                                <span id="maxPlayers" class="text-muted"></span>
+                            </div>
+                            <div class="progress mt-2" style="height: 8px;">
+                                <div id="playerProgress" class="progress-bar" role="progressbar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <h6><i class="bi bi-speedometer2"></i> Performance</h6>
+                            <div class="d-flex">
+                                <div class="me-4">
+                                    <div class="stat-value"><span id="serverLatency"></span>ms</div>
+                                    <div class="stat-label">Ping</div>
+                                </div>
+                                <div>
+                                    <div class="stat-value"><span id="responseTime"></span>ms</div>
+                                    <div class="stat-label">Response</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="server-motd mt-3">
+                <h6><i class="bi bi-chat-square-text"></i> MOTD</h6>
+                <div id="motdDisplay" class="motd-box p-3"></div>
+            </div>
+
+            <div id="playersContainer" class="mt-4 d-none">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6><i class="bi bi-person-video3"></i> Online Players</h6>
+                    <small><span id="playersCount">0</span>/<span id="playersMax">0</span></small>
+                </div>
+                <div id="playersGrid" class="players-grid"></div>
+                <div id="playersLoading" class="text-center py-3">
+                    <div class="spinner-border spinner-border-sm text-muted"></div>
+                    <span class="ms-2">Loading player list...</span>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="/static/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
