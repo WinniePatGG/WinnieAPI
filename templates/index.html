@@ -3,148 +3,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Status API</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/static/style.css" rel="stylesheet">
+    <title>WinnieAPI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <div class="container py-4">
-        <header class="text-center mb-5">
-            <div class="logo-container">
-                <img src="https://imgs.search.brave.com/9YuEZ4MZ2Worbo1zJGCsCNvTccs0CqeyDTNM4Ms3fyA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuaWNvbi1pY29u/cy5jb20vMjY5OS9Q/TkcvNTEyL21pbmVj/cmFmdF9sb2dvX2lj/b25fMTY4OTc0LnBu/Zw" alt="Minecraft" class="minecraft-logo">
-                <h1 class="mt-3">Server Status API</h1>
-                <p class="lead text-muted">Server analytics with fast results</p>
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <i class="fas fa-bolt"></i>Winnie<span>API</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#documentation">Documentation</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#contact">Contact</a>
             </div>
-        </header>
-        
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <div class="server-search mb-4">
-                            <div class="input-group">
-                                <span class="input-group-text bg-dark text-white">
-                                    <i class="bi bi-minecraft"></i>
-                                </span>
-                                <input type="text" id="serverInput" 
-                                       class="form-control form-control-lg dark-mode-input" 
-                                       placeholder="mc.hypixel.net" 
-                                       autocomplete="off">
-                                <button id="checkBtn" class="btn btn-success btn-lg px-4">
-                                    <i class="bi bi-lightning-charge"></i> Check
-                                </button>
-                            </div>
-                        </div>
-
-                        <div id="statusContainer">
-                            <div class="welcome-message text-center py-5">
-                                <i class="bi bi-server text-muted" style="font-size: 3rem;"></i>
-                                <h4 class="mt-3">Enter a server address to begin</h4>
-                                <p class="text-muted">Example: lunaris-mc.de or 123.123.123.123:25565</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer class="mt-5 text-center text-muted small">
-            <p>Minecraft Server Status Monitor &copy; 2025</p>
-            <p class="text-muted">Not affiliated with Mojang or Microsoft</p>
-            <p>Made with &heartsuit; by <a href="https://winniepat.de">WinniePat</a></p>
-        </footer>
-    </div>
-
-    <template id="loadingTemplate">
-        <div class="status-loading text-center py-5">
-            <div class="spinner-border text-primary"></div>
-            <h5 class="mt-3" id="loadingText">Connecting to server...</h5>
-            <div class="progress mt-3" style="height: 6px;">
-                <div id="timeoutBar" class="progress-bar progress-bar-striped progress-bar-animated" 
-                     role="progressbar" style="width: 100%"></div>
-            </div>
-        </div>
-    </template>
-
-    <template id="errorTemplate">
-        <div class="status-error">
-            <div class="alert alert-danger">
-                <div class="d-flex">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <div>
-                        <h5 id="errorTitle">Server Error</h5>
-                        <p id="errorMessage" class="mb-0"></p>
-                    </div>
-                </div>
-            </div>
-            <button class="btn btn-sm btn-outline-primary w-100 mt-2" onclick="retryCheck()">
-                <i class="bi bi-arrow-clockwise"></i> Try Again
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
             </button>
-        </div>
-    </template>
+        </nav>
+    </header>
 
-    <template id="successTemplate">
-        <div class="status-success">
-            <div class="server-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 id="serverAddress" class="mb-0"></h4>
-                    <span id="serverStatusBadge" class="badge"></span>
-                </div>
-                <div class="server-meta mt-2">
-                    <span id="serverVersion" class="badge bg-dark me-2"></span>
-                    <small id="lastUpdated" class="text-muted"></small>
-                </div>
-            </div>
-
-            <div class="server-stats mt-4">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="stat-card">
-                            <h6><i class="bi bi-people"></i> Players</h6>
-                            <div class="d-flex align-items-end">
-                                <h2 id="playerCount" class="mb-0 me-2"></h2>
-                                <span id="maxPlayers" class="text-muted"></span>
-                            </div>
-                            <div class="progress mt-2" style="height: 8px;">
-                                <div id="playerProgress" class="progress-bar" role="progressbar"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="stat-card">
-                            <h6><i class="bi bi-speedometer2"></i> Performance</h6>
-                            <div class="d-flex">
-                                <div class="me-4">
-                                    <div class="stat-value"><span id="serverLatency">--</span>ms</div>
-                                    <div class="stat-label">Ping</div>
-                                </div>
-                                <div>
-                                    <div class="stat-value"><span id="responseTime">--</span>ms</div>
-                                    <div class="stat-label">Response</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="server-motd mt-3">
-                <h6><i class="bi bi-chat-square-text"></i> MOTD</h6>
-                <div id="motdDisplay" class="motd-box p-3"></div>
-            </div>
-
-            <div id="playersContainer" class="mt-4 d-none">
-                <div id="playersGrid" class="players-grid"></div>
-                <div id="playersLoading" class="text-center py-3">
-                    <div class="spinner-border spinner-border-sm text-muted"></div>
-                    <span class="ms-2">Loading player list...</span>
-                </div>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>The Most Powerful API for Your Needs</h1>
+            <p>WinnieAPI provides developers with a comprehensive set of tools to build scalable, efficient applications with minimal effort.</p>
+            <div class="hero-buttons">
+                <button class="cta-button" onclick="scammed();">Start Free Trial</button>
             </div>
         </div>
-    </template>
+    </section>
 
-    <script src="/static/script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <section id="features" class="features">
+        <div class="section-header">
+            <h2>Why Choose WinnieAPI</h2>
+            <p>Discover the features that make our API stand out from the competition</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <h3>Lightning Fast</h3>
+                <p>Our optimized infrastructure ensures response times under 50ms globally.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Secure</h3>
+                <p>We try to collect as much data about you as possible.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-sliders-h"></i>
+                </div>
+                <h3>Flexible</h3>
+                <p>If you ask nicely, I may add another endpoint.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Scalable</h3>
+                <p>Handles from 1 to 1 million requests per second without breaking a sweat.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="documentation" class="documentation">
+        <div class="section-header">
+            <h2>API Documentation</h2>
+            <p>Explore all available endpoints and their functionality</p>
+        </div>
+        <div class="endpoints-container">
+            <div class="endpoint-tabs">
+                <button class="tab-btn active" data-tab="users">Minecraft Server</button>
+                <button class="tab-btn" data-tab="products">Minecraft Routes</button>
+            </div>
+            <div class="endpoint-content">
+                <div id="users" class="tab-pane active">
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <h3>/api/v1/status/-serverIp-</h3>
+                            <button class="copy-btn"><i class="far fa-copy"></i></button>
+                        </div>
+                        <p>Retrieve data about a Minecraft Server.</p>
+                        <div class="endpoint-details">
+                            <h4>Parameters</h4>
+                            <table>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                                <tr>
+                                    <td>ip</td>
+                                    <td>String</td>
+                                    <td>Server Address</td>
+                                </tr>
+                                <tr>
+                                    <td>last_updated</td>
+                                    <td>String</td>
+                                    <td>Time of the last update</td>
+                                </tr>
+                                <tr>
+                                    <td>latency</td>
+                                    <td>String</td>
+                                    <td>Latency to Server</td>
+                                </tr>
+                                <tr>
+                                    <td>max_players</td>
+                                    <td>String</td>
+                                    <td>Maximum amount of players</td>
+                                </tr>
+                                <tr>
+                                    <td>motd</td>
+                                    <td>String</td>
+                                    <td>Message Of The Day</td>
+                                </tr>
+                                <tr>
+                                    <td>online</td>
+                                    <td>String</td>
+                                    <td>Online indicator</td>
+                                </tr>
+                                <tr>
+                                    <td>players</td>
+                                    <td>String</td>
+                                    <td>Current online Players</td>
+                                </tr>
+                                <tr>
+                                    <td>response_time_ms</td>
+                                    <td>String</td>
+                                    <td>Time until the Server responded</td>
+                                </tr>
+                                <tr>
+                                    <td>version</td>
+                                    <td>String</td>
+                                    <td>Version the server is running on</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="products" class="tab-pane">
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <h3>/api/v1/ascii/face/-username-</h3>
+                            <button class="copy-btn"><i class="far fa-copy"></i></button>
+                        </div>
+                        <p>Shows ascii art of the players skin head.</p>
+                        <div class="endpoint-details">
+                            <h4>Parameters</h4>
+                            <table>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                                <tr>
+                                    <th>Ascii Render</th>
+                                    <th>Ascii Render</th>
+                                    <th>Render of the skins head</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <h3>/api/v1/ascii/fullskin/-username-</h3>
+                            <button class="copy-btn"><i class="far fa-copy"></i></button>
+                        </div>
+                        <p>Shows ascii art of the players skin.</p>
+                        <div class="endpoint-details">
+                            <h4>Parameters</h4>
+                            <table>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                                <tr>
+                                    <th>Ascii Render</th>
+                                    <th>Ascii Render</th>
+                                    <th>Render of the skins</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <h3>/api/v1/uuid/-username-</h3>
+                            <button class="copy-btn"><i class="far fa-copy"></i></button>
+                        </div>
+                        <p>Shows the uuid of a entered username.</p>
+                        <div class="endpoint-details">
+                            <h4>Parameters</h4>
+                            <table>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                                <tr>
+                                    <th>username</th>
+                                    <th>String</th>
+                                    <th>Entered Username</th>
+                                </tr>
+                                <tr>
+                                    <th>uuid</th>
+                                    <th>String</th>
+                                    <th>UUID of entered username</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <h3>/api/v1/skinurl/-username-</h3>
+                            <button class="copy-btn"><i class="far fa-copy"></i></button>
+                        </div>
+                        <p>Shows a link to the players skin</p>
+                        <div class="endpoint-details">
+                            <h4>Parameters</h4>
+                            <table>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                                <tr>
+                                    <th>skin_url</th>
+                                    <th>String</th>
+                                    <th>URL to players skin</th>
+                                </tr>
+                                <tr>
+                                    <th>username</th>
+                                    <th>String</th>
+                                    <th>Entered username</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <h3>/api/v1/cape/-username-</h3>
+                            <button class="copy-btn"><i class="far fa-copy"></i></button>
+                        </div>
+                        <p>Displays the cape of the player</p>
+                        <div class="endpoint-details">
+                            <h4>Parameters</h4>
+                            <table>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                                <tr>
+                                    <th>cape</th>
+                                    <th>cape</th>
+                                    <th>Cape texture</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing">
+        <div class="section-header">
+            <h2>Simple, Transparent Pricing</h2>
+            <p>Choose the plan that fits your needs</p>
+        </div>
+        <div class="pricing-cards">
+            <div class="price-card">
+                <h3>Starter</h3>
+                <div class="price">0€<span>/month</span></div>
+                <ul>
+                    <li><i class="fas fa-check"></i> 1,000 requests/month</li>
+                    <li><i class="fas fa-check"></i> Basic analytics</li>
+                    <li><i class="fas fa-check"></i> Email support</li>
+                </ul>
+                <button class="secondary-button">Get Started</button>
+            </div>
+            <div class="price-card featured">
+                <div class="popular-badge">Most Popular</div>
+                <h3>Pro</h3>
+                <div class="price">0€<span>/month</span></div>
+                <ul>
+                    <li><i class="fas fa-check"></i> 50,000 requests/month</li>
+                    <li><i class="fas fa-check"></i> Advanced analytics</li>
+                    <li><i class="fas fa-check"></i> Priority support</li>
+                    <li><i class="fas fa-check"></i> Webhooks</li>
+                </ul>
+                <button class="cta-button">Get Started</button>
+            </div>
+            <div class="price-card">
+                <h3>Enterprise</h3>
+                <div class="price">Custom (0€)</div>
+                <ul>
+                    <li><i class="fas fa-check"></i> Unlimited requests</li>
+                    <li><i class="fas fa-check"></i> Dedicated infrastructure</li>
+                    <li><i class="fas fa-check"></i> 24/7 support</li>
+                    <li><i class="fas fa-check"></i> SLA guarantee</li>
+                </ul>
+                <button class="secondary-button">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="section-header">
+            <h2>Get In Touch</h2>
+            <p>Have questions? We're here to help!</p>
+        </div>
+        <div class="contact-container">
+            <form class="contact-form">
+                <div class="form-group">
+                    <input type="text" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Your Message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="cta-button">Send Message</button>
+            </form>
+            <div class="contact-info">
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <p>winniepatgg@web.de</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <a href="#" class="logo">
+                    <i class="fas fa-bolt"></i>Winnie<span>API</span>
+                </a>
+                <p>Powering the next generation of applications</p>
+                <div class="social-links">
+                    <a href="https://github.com/WinniePatGG" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://discord.gg/6Kg6eKkZSe" target="_blank"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Product</h4>
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#documentation">Documentation</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-links">
+                <h4>Developer</h4>
+                <a href="https://winniepat.de" target="_blank">About</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 WinnieAPI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../static/script.js"></script>
 </body>
 </html>
