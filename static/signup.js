@@ -39,8 +39,8 @@ function showSignupModal() {
                     <select id="signup-plan" required>
                         <option value="">Select Plan</option>
                         <option value="starter">Starter (Free)</option>
-                        <option value="pro">Pro ($49/month)</option>
-                        <option value="enterprise">Enterprise (Custom)</option>
+                        <option value="pro">Pro (0€/month)</option>
+                        <option value="enterprise">Enterprise (0€)</option>
                     </select>
                 </div>
                 <button type="submit" class="cta-button">Create Account</button>
